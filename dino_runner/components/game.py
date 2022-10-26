@@ -1,9 +1,7 @@
-from random import randint, random
-from turtle import Screen
 import pygame
 
 from dino_runner.components.dinosaur import Dinosaur
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, CLOUD
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 from dino_runner.components.obstacles.obstacles_manager import ObstaclesManager
 
 class Game:
@@ -21,7 +19,6 @@ class Game:
         self.obstacle_manager = ObstaclesManager()
 
     def run(self):
-        # Game loop: events - update - draw
         self.playing = True
         while self.playing:
             self.events()
@@ -44,7 +41,6 @@ class Game:
         self.screen.fill((255, 255, 255)) #Também aceita código hexadecimal "#FFFFFF"
         self.draw_background()
         self.obstacle_manager.draw(self.screen)
-        #self.draw_clouds()
         self.player.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
@@ -57,18 +53,3 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
-    
-    #def draw_clouds(self):
-        #image_width = CLOUD.get_width()
-        
-        #if self.x_pos_cloud == 0:
-            #self.y_pos_cloud = randint(99, 200)
-        
-        #self.screen.blit(CLOUD, (self.x_pos_cloud, self.y_pos_cloud))
-        #self.screen.blit(CLOUD, (image_width + self.x_pos_cloud, self.y_pos_cloud))
-
-        #if self.x_pos_cloud <= SCREEN_WIDTH:
-            #self.screen.blit(CLOUD, (image_width + self.x_pos_cloud, self.y_pos_cloud))
-            #self.x_pos_cloud = 0
-
-        #self.x_pos_cloud += self.game_speed
