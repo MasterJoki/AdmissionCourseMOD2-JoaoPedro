@@ -12,22 +12,22 @@ class ObstaclesManager:
     def update(self, game):
         if len(self.obstacles) == 0:
             image_cactus = [SMALL_CACTUS, LARGE_CACTUS]
-            random_cactu = randint(0, 1)
-            cactus = Cactus(image_cactus[random_cactu])
+            cactus = Cactus(image_cactus)
 
             bird = Bird(BIRD)
 
-            obstacles_possibilities = [cactus, bird]
-            random_obstacles = randint(0,1)
+            obstacles_possibilities = [cactus, bird, cactus]
+            random_obstacles = randint(0,2)
 
             self.obstacles.append(obstacles_possibilities[random_obstacles])
         
         for obstacle in self.obstacles:
-            obstacle.update(game.game_speed, self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):
                 pygame.time.delay(500)
                 game.playing = False
                 break
+            
+            obstacle.update(game.game_speed, self.obstacles)
     
     def draw(self, screen):
         for obstacle in self.obstacles:
