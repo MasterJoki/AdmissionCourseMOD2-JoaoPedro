@@ -61,8 +61,8 @@ class Game:
         if self.highScore < self.score:
             self.highScore = self.score
 
-        if self.score % 100 == 0 and self.game_speed <= 45:
-            self.game_speed += 5
+        if self.score % 100 == 0 and self.game_speed <= 46:
+            self.game_speed += 2
 
     def draw(self):
         self.clock.tick(FPS)
@@ -125,7 +125,7 @@ class Game:
             self.image_format(RESET, (half_screen_width - 5, half_screen_height + 80))
             self.text_format((f"Score: {self.score}"), (1000, 50))
             self.text_format((f"HighScore: {self.highScore}"), (1000, 85))
-            self.text_format((f"Deaths: {self.death_count}"), (1000, 120))
+            self.text_format((f"Deaths: {self.death_count}"), (70, 50))
 
         pygame.display.update()
         self.handle_events_on_menu()
