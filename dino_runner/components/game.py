@@ -1,8 +1,10 @@
+import imp
 import pygame
 
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_STYLE, GAME_OVER, RESET, RUNNING, DEAD
 from dino_runner.components.obstacles.obstacles_manager import ObstaclesManager
+from dino_runner.components.clouds.clouds_magager import CloudManager
 
 class Game:
     def __init__(self):
@@ -21,6 +23,7 @@ class Game:
         self.death_count = 0
         self.player = Dinosaur()
         self.obstacle_manager = ObstaclesManager()
+        self.cloud_manager = CloudManager()
 
     def execute(self):
         self.running = True
@@ -40,6 +43,7 @@ class Game:
 
     def resetGame(self):
         self.obstacle_manager.reset_obstacles()
+        self.cloud_manager.reset()
         self.score = 0
         self.game_speed = 20
 
@@ -51,6 +55,7 @@ class Game:
 
     def update(self):
         self.obstacle_manager.update(self)
+        self.cloud_manager.update(self.game_speed)
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.update_score()
@@ -69,6 +74,7 @@ class Game:
         self.screen.fill((255, 255, 255)) #Também aceita código hexadecimal "#FFFFFF"
         self.draw_background()
         self.obstacle_manager.draw(self.screen)
+        self.cloud_manager.draw(self.screen)
         self.player.draw(self.screen)
         self.draw_score()
         pygame.display.update()

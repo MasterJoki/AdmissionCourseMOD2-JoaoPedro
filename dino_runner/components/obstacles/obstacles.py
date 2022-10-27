@@ -24,7 +24,6 @@ class Obstacles(Sprite):
     def updateBird(self):
         if self.step_index >= 12:
             self.step_index = 0
-
         
         image = self.image[0] if self.step_index < 6 else self.image[1]
         self.imageBird = image
