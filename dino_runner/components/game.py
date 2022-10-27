@@ -6,6 +6,9 @@ from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, T
 from dino_runner.components.obstacles.obstacles_manager import ObstaclesManager
 from dino_runner.components.clouds.clouds_magager import CloudManager
 
+HALF_SCREEN_WIDTH = SCREEN_WIDTH // 2
+HALF_SCREEN_HEIGHT = SCREEN_HEIGHT // 2
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -103,8 +106,8 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 self.run()
             
-    def text_format(self, textReceived, position):
-        font = pygame.font.Font(FONT_STYLE, 22)
+    def text_format(self, textReceived, position, font=FONT_STYLE, fontSize=22):
+        font = pygame.font.Font(font, fontSize)
         text = font.render(textReceived, True, (0, 0, 0))        
         text_rect = text.get_rect()
         text_rect.center = position
@@ -118,20 +121,24 @@ class Game:
 
     def show_menu(self):
         self.screen.fill((255, 255, 255))
-        half_screen_width = SCREEN_WIDTH // 2
-        half_screen_height = SCREEN_HEIGHT // 2
 
         if self.death_count == 0:
-            self.screen.blit(RUNNING[0], (half_screen_width - 40, half_screen_height - 120))
-            self.text_format("Press any Key to Start", (half_screen_width, half_screen_height))
+            self.show_start()
         else:
-            self.screen.blit(DEAD, (half_screen_width - 40, half_screen_height - 170))
-            self.image_format(GAME_OVER, (half_screen_width, half_screen_height - 40))
-            self.text_format("Press any Key to Restart", (half_screen_width, half_screen_height))
-            self.image_format(RESET, (half_screen_width - 5, half_screen_height + 80))
-            self.text_format((f"Score: {self.score}"), (1000, 50))
-            self.text_format((f"HighScore: {self.highScore}"), (1000, 85))
-            self.text_format((f"Deaths: {self.death_count}"), (70, 50))
+            self.show_death()
 
         pygame.display.update()
         self.handle_events_on_menu()
+
+    def show_start(self):
+        self.screen.blit(RUNNING[0], (HALF_SCREEN_WIDTH - 40, HALF_SCREEN_HEIGHT - 120))
+        self.text_format("Press any Key to Start", (HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT))
+    
+    def show_death(self):
+        self.screen.blit(DEAD, (HALF_SCREEN_WIDTH - 40, HALF_SCREEN_HEIGHT - 170))
+        self.image_format(GAME_OVER, (HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT - 40))
+        self.text_format("Press any Key to Restart", (HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT))
+        self.image_format(RESET, (HALF_SCREEN_WIDTH - 5, HALF_SCREEN_HEIGHT + 80))
+        self.text_format((f"Score: {self.score}"), (1000, 50))
+        self.text_format((f"HighScore: {self.highScore}"), (1000, 85))
+        self.text_format((f"Deaths: {self.death_count}"), (70, 50))
