@@ -11,7 +11,6 @@ class Obstacles(Sprite):
         self.step_index = 0
         self.isBird = isBird
         self.imageBird = self.image
-        self.y_pos_bird = 275
 
     def update(self, game_speed, obstacles):
         if self.isBird:
@@ -26,9 +25,7 @@ class Obstacles(Sprite):
         if self.step_index >= 12:
             self.step_index = 0
 
-        self.fly()
-    
-    def fly(self):
+        
         image = self.image[0] if self.step_index < 6 else self.image[1]
         self.imageBird = image
         self.step_index += 1
@@ -40,4 +37,4 @@ class Obstacles(Sprite):
         screen.blit(self.image[self.type], (self.rect.x, self.rect.y))
 
     def drawBird(self, screen: pygame.Surface):
-        screen.blit(self.imageBird, (self.rect.x, self.y_pos_bird))
+        screen.blit(self.imageBird, (self.rect.x, self.rect.y))
