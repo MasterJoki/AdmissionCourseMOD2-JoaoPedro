@@ -31,7 +31,15 @@ class ObstaclesManager:
                     game.death_count += 1
                     break
                 else:
-                    self.obstacles.remove(obstacle)
+                    if game.player.type == "shield":
+                        self.obstacles.remove(obstacle)
+                    elif obstacle.isBird:
+                        self.obstacles.remove(obstacle)
+                    else:
+                        pygame.time.delay(500)
+                        game.playing = False
+                        game.death_count += 1
+                        break
     
     def draw(self, screen):
         for obstacle in self.obstacles:
