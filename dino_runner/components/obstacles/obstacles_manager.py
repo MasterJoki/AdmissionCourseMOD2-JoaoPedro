@@ -6,9 +6,14 @@ from dino_runner.components.obstacles.bird import Bird
 from dino_runner.utils.constants import SMALL_CACTUS, SMALL_CACTUS_INVERT, LARGE_CACTUS, LARGE_CACTUS_INVERT, BIRD, BIRD_INVERT
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 
+pygame.init()
+pygame.mixer.init()
+
 class ObstaclesManager:
     def __init__(self):
         self.obstacles = []
+        self.death_sound = pygame.mixer.Sound("dino_runner/assets/sons/death_sound.wav")
+        self.death_sound.set_volume(1)
 
     def update(self, game):
         if len(self.obstacles) == 0:
@@ -27,6 +32,7 @@ class ObstaclesManager:
             obstacle.update(game.game_speed, self.obstacles, game.isDark)
             if game.player.dino_rect.colliderect(obstacle.rect):
                 if not game.player.has_power_up:
+                    self.death_sound.play()
                     pygame.time.delay(500)
                     game.playing = False
                     game.death_count += 1

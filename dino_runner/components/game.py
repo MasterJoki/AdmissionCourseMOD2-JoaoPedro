@@ -8,6 +8,9 @@ from dino_runner.components.obstacles.obstacles_manager import ObstaclesManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 from dino_runner.components.clouds.clouds_magager import CloudManager
 
+pygame.init()
+pygame.mixer.init()
+
 HALF_SCREEN_WIDTH = SCREEN_WIDTH // 2
 HALF_SCREEN_HEIGHT = SCREEN_HEIGHT // 2
 
@@ -37,6 +40,10 @@ class Game:
         self.bgDicio = {NORMAL_TYPE: BG, INVERTED_TYPE: BG_INVERT}
         self.fillDicio = {NORMAL_TYPE: (255, 255, 255), INVERTED_TYPE: (0, 0, 0)}
 
+        #Ala psiquiátrica 2
+        self.score_sound = pygame.mixer.Sound("dino_runner/assets/sons/score_sound.wav")
+        self.score_sound.set_volume(1)
+
     def verifyType(self):
         if self.isDark:
             return INVERTED_TYPE
@@ -58,6 +65,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
+        self.isDark = False
 
     def resetGame(self):
         self.obstacle_manager.reset_obstacles(self.player)
@@ -65,7 +73,6 @@ class Game:
         self.cloud_manager.reset()
         self.score = 0
         self.game_speed = 20
-        self.isDark = False
 
     def events(self):
         for event in pygame.event.get():
@@ -82,19 +89,20 @@ class Game:
         self.power_up_manager.update(self.score, self.game_speed, self.player, self.isDark)
 
     def update_score(self):
-        self.score += 1
+        self.score += 0.5
 
         if self.highScore < self.score:
             self.highScore = self.score
 
         if self.score % 100 == 0 and self.game_speed <= 46:
             self.game_speed += 2
+            self.score_sound.play()
         
         if not self.isDark:
-            if self.score % 350 == 0:
+            if self.score % 300 == 0:
                 self.isDark = True
         else:
-            if self.score % 350 == 0:
+            if self.score % 300 == 0:
                 self.isDark = False
 
     def draw(self):
@@ -124,8 +132,8 @@ class Game:
         self.x_pos_bg -= self.game_speed
     
     def draw_score(self):
-        self.text_format((f"Score: {self.score}"), (1000, 50))
-        self.text_format((f"HighScore: {self.highScore}"), (1000, 85))
+        self.text_format((f"Score: {round(self.score)}"), (1000, 50))
+        self.text_format((f"HighScore: {round(self.highScore)}"), (1000, 85))
     
     def draw_power_up_time(self):
         if self.player.has_power_up:
@@ -182,6 +190,6 @@ class Game:
         self.image_format(GAME_OVER, (HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT - 40))
         self.text_format("Press any Key to Restart", (HALF_SCREEN_WIDTH, HALF_SCREEN_HEIGHT))
         self.image_format(RESET, (HALF_SCREEN_WIDTH - 5, HALF_SCREEN_HEIGHT + 80))
-        self.text_format((f"Score: {self.score}"), (1000, 50))
-        self.text_format((f"HighScore: {self.highScore}"), (1000, 85))
+        self.text_format((f"Score: {round(self.score)}"), (1000, 50))
+        self.text_format((f"HighScore: {round(self.highScore)}"), (1000, 85))
         self.text_format((f"Deaths: {self.death_count}"), (70, 50))

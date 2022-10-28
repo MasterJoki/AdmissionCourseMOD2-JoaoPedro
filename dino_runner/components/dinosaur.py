@@ -2,6 +2,8 @@ import pygame
 from pygame.sprite import Sprite
 from dino_runner.utils.constants import *
 
+pygame.init()
+pygame.mixer.init()
 
 DUCK_IMG = {
     DEFAULT_TYPE: [DUCKING, DUCKING_INVERT], 
@@ -39,7 +41,9 @@ class Dinosaur(Sprite):
         self.jump_vel = JUMP_VEL
         self.position = 0
         self.setup_state()
-    
+        self.sound_jump = pygame.mixer.Sound("dino_runner/assets/sons/jump_sound.wav")
+        self.sound_jump.set_volume(1)
+
     def setup_state(self):
         self.has_power_up = False
         self.shield = False
@@ -65,6 +69,7 @@ class Dinosaur(Sprite):
         if (user_input[pygame.K_UP] or user_input[pygame.K_SPACE] or user_input[pygame.K_w]) and not self.dino_jump and not self.dino_duck:
             self.dino_jump = True
             self.dino_run = False
+            self.sound_jump.play()
         elif not self.dino_jump:
             self.dino_jump = False
             self.dino_run = True

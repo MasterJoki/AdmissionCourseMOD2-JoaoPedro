@@ -11,10 +11,10 @@ class Cloud(Sprite):
         self.rect.y = choice([100, 150, 200])
 
     def update(self, game_speed, cloudManager):
-        self.rect.x -= game_speed 
+        self.rect.x -= game_speed * 0.75
 
         if self.rect.x < -self.rect.width:
-            cloudManager.clouds.pop()
+            cloudManager.clouds.pop(0)
     
     def draw(self, screen: pygame.Surface):
         screen.blit(self.image, (self.rect.x, self.rect.y))

@@ -17,6 +17,10 @@ class CloudManager:
             self.clouds.append(Cloud(self.image[self.position]))
 
         for cloud in self.clouds:
+            if round(cloud.rect.x) in range(300, 315) and len(self.clouds) < 3:
+                self.clouds.append(Cloud(self.image[self.position]))
+
+        for cloud in self.clouds:
             cloud.update(game_speed, self)
 
     def draw(self, screen):
