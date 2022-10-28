@@ -1,4 +1,3 @@
-from email.policy import default
 import pygame
 from random import choice
 
@@ -26,7 +25,6 @@ class ObstaclesManager:
         
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles, game.isDark)
-            
             if game.player.dino_rect.colliderect(obstacle.rect):
                 if not game.player.has_power_up:
                     pygame.time.delay(500)
