@@ -11,7 +11,7 @@ class PowerUp(Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = SCREEN_WIDTH + random.randint(800, 1000)
         self.rect.y = random.randint(125, 175)
-        self.duration = random.randint(3, 5)
+        self.duration = random.randint(4, 8)
         self.start_time = 0
 
     def update(self, game_speed, power_ups):

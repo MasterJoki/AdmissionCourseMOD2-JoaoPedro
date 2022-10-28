@@ -1,3 +1,4 @@
+from email.policy import default
 import pygame
 from random import choice
 
@@ -31,15 +32,16 @@ class ObstaclesManager:
                     game.death_count += 1
                     break
                 else:
-                    if game.player.type == "shield":
+                    if game.player.type == "shield" or obstacle.isBird:
                         self.obstacles.remove(obstacle)
-                    elif obstacle.isBird:
-                        self.obstacles.remove(obstacle)
+                        self.desative_power_up(game.player)
                     else:
                         pygame.time.delay(500)
                         game.playing = False
                         game.death_count += 1
+                        self.desative_power_up(game.player)
                         break
+                
     
     def draw(self, screen):
         for obstacle in self.obstacles:
@@ -47,3 +49,10 @@ class ObstaclesManager:
 
     def reset_obstacles(self):
         self.obstacles = []
+        self.desative_power_up()
+    
+    def desative_power_up(self, player):
+        player.shield = False
+        player.has_power_up = False
+        player.type = "default"
+        player.power_up_time = 0

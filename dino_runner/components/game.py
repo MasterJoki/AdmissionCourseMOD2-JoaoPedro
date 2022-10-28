@@ -1,3 +1,4 @@
+from PIL import Image, ImageChops
 import pygame
 
 from dino_runner.components.dinosaur import Dinosaur
