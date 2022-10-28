@@ -4,7 +4,7 @@ from random import choice
 
 from dino_runner.components.obstacles.cactus import Cactus
 from dino_runner.components.obstacles.bird import Bird
-from dino_runner.utils.constants import SMALL_CACTUS, LARGE_CACTUS, BIRD
+from dino_runner.utils.constants import SMALL_CACTUS, SMALL_CACTUS_INVERT, LARGE_CACTUS, LARGE_CACTUS_INVERT, BIRD, BIRD_INVERT
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 
 class ObstaclesManager:
@@ -13,17 +13,19 @@ class ObstaclesManager:
 
     def update(self, game):
         if len(self.obstacles) == 0:
-            image_cactus = [SMALL_CACTUS, LARGE_CACTUS]
+            small_cactus = [SMALL_CACTUS, SMALL_CACTUS_INVERT]
+            large_cactus = [LARGE_CACTUS, LARGE_CACTUS_INVERT]
+            image_cactus = [small_cactus, large_cactus]
             cactus = Cactus(image_cactus)
 
-            bird_images = BIRD
+            bird_images = [BIRD, BIRD_INVERT]
             bird = Bird(bird_images)
 
             obstacles = [bird, cactus]
             self.obstacles.append(choice(obstacles))
         
         for obstacle in self.obstacles:
-            obstacle.update(game.game_speed, self.obstacles)
+            obstacle.update(game.game_speed, self.obstacles, game.isDark)
             
             if game.player.dino_rect.colliderect(obstacle.rect):
                 if not game.player.has_power_up:
@@ -47,9 +49,9 @@ class ObstaclesManager:
         for obstacle in self.obstacles:
             obstacle.draw(screen)
 
-    def reset_obstacles(self):
+    def reset_obstacles(self, player):
         self.obstacles = []
-        self.desative_power_up()
+        self.desative_power_up(player)
     
     def desative_power_up(self, player):
         player.shield = False

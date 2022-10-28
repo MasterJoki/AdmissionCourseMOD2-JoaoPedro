@@ -1,8 +1,9 @@
-from PIL import Image, ImageChops
+from ssl import VerifyMode
+from tkinter import NORMAL
 import pygame
 
 from dino_runner.components.dinosaur import Dinosaur
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_STYLE, GAME_OVER, RESET, RUNNING, DEAD, DEFAULT_TYPE
+from dino_runner.utils.constants import BG, BG_INVERT, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, FONT_STYLE, GAME_OVER, RESET, RUNNING, RUNNING_INVERT, DEAD, DEFAULT_TYPE, NORMAL_TYPE, INVERTED_TYPE
 from dino_runner.components.obstacles.obstacles_manager import ObstaclesManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 from dino_runner.components.clouds.clouds_magager import CloudManager
@@ -30,6 +31,18 @@ class Game:
         self.cloud_manager = CloudManager()
         self.power_up_manager = PowerUpManager()
 
+        #Ala psiquiátrica
+        self.isDark = False
+        self.type = NORMAL_TYPE
+        self.bgDicio = {NORMAL_TYPE: BG, INVERTED_TYPE: BG_INVERT}
+        self.fillDicio = {NORMAL_TYPE: (255, 255, 255), INVERTED_TYPE: (0, 0, 0)}
+
+    def verifyType(self):
+        if self.isDark:
+            return INVERTED_TYPE
+        else:
+            return NORMAL_TYPE
+
     def execute(self):
         self.running = True
         while self.running:
@@ -47,11 +60,12 @@ class Game:
             self.draw()
 
     def resetGame(self):
-        self.obstacle_manager.reset_obstacles()
+        self.obstacle_manager.reset_obstacles(self.player)
         self.power_up_manager.reset_power_ups()
         self.cloud_manager.reset()
         self.score = 0
         self.game_speed = 20
+        self.isDark = False
 
     def events(self):
         for event in pygame.event.get():
@@ -60,12 +74,12 @@ class Game:
                 self.running = False
 
     def update(self):
-        self.obstacle_manager.update(self)
-        self.cloud_manager.update(self.game_speed)
         user_input = pygame.key.get_pressed()
-        self.player.update(user_input)
+        self.obstacle_manager.update(self)
+        self.cloud_manager.update(self.game_speed, self.isDark)
+        self.player.update(user_input, self.isDark)
         self.update_score()
-        self.power_up_manager.update(self.score, self.game_speed, self.player)
+        self.power_up_manager.update(self.score, self.game_speed, self.player, self.isDark)
 
     def update_score(self):
         self.score += 1
@@ -75,10 +89,17 @@ class Game:
 
         if self.score % 100 == 0 and self.game_speed <= 46:
             self.game_speed += 2
+        
+        if not self.isDark:
+            if self.score % 350 == 0:
+                self.isDark = True
+        else:
+            if self.score % 350 == 0:
+                self.isDark = False
 
     def draw(self):
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255)) #Também aceita código hexadecimal "#FFFFFF"
+        self.screen.fill(self.fillDicio[self.verifyType()]) #Também aceita código hexadecimal "#FFFFFF"
         self.draw_background()
         self.obstacle_manager.draw(self.screen)
         self.cloud_manager.draw(self.screen)
@@ -90,12 +111,14 @@ class Game:
         pygame.display.flip()
 
     def draw_background(self):
-        image_width = BG.get_width()
-        self.screen.blit(BG, (self.x_pos_bg, self.y_pos_bg))
-        self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+        image = self.bgDicio[self.verifyType()]
+        image_width = image.get_width()
+
+        self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg))
+        self.screen.blit(image, (image_width + self.x_pos_bg, self.y_pos_bg))
 
         if self.x_pos_bg <= -image_width:
-            self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+            self.screen.blit(image, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
 
         self.x_pos_bg -= self.game_speed
@@ -122,8 +145,13 @@ class Game:
                 self.run()
             
     def text_format(self, textReceived, position, fontSize=22, font=FONT_STYLE):
+        if self.isDark:
+            color = (255, 255, 255)
+        else:
+            color = (0, 0, 0)
+        
         font = pygame.font.Font(font, fontSize)
-        text = font.render(textReceived, True, (0, 0, 0))        
+        text = font.render(textReceived, True, color)        
         text_rect = text.get_rect()
         text_rect.center = position
         self.screen.blit(text, text_rect)
