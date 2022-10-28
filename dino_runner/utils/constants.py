@@ -75,3 +75,4 @@ FONT_STYLE = "freesansbold.ttf"
 
 DEFAULT_TYPE = "default"
 SHIELD_TYPE = "shield"
+HAMMER_TYPE = "hammer"
