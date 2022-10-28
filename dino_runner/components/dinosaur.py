@@ -1,4 +1,6 @@
 import pygame
+from pygame.locals import *
+
 from pygame.sprite import Sprite
 
 from dino_runner.utils.constants import *
@@ -28,11 +30,13 @@ JUMP_VEL = 8.5
 
 class Dinosaur(Sprite):
     def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
         self.type = DEFAULT_TYPE
         self.image = RUN_IMG[self.type][0][0]
-        self.dino_rect = self.image.get_rect()
-        self.dino_rect.x = X_POS
-        self.dino_rect.y = Y_POS
+        self.rect = self.image.get_rect()
+        self.rect.x = X_POS
+        self.rect.y = Y_POS
+        self.mask = pygame.mask.from_surface(self.image)
         self.step_index = 0
         self.dino_jump = False
         self.dino_run = True
@@ -76,26 +80,26 @@ class Dinosaur(Sprite):
 
     def run(self):
         self.image = RUN_IMG[self.type][self.position][self.step_index // 5]
-        self.dino_rect = self.image.get_rect()
-        self.dino_rect.x = X_POS
-        self.dino_rect.y = Y_POS
+        self.rect = self.image.get_rect()
+        self.rect.x = X_POS
+        self.rect.y = Y_POS
         self.step_index += 1
 
     def jump(self):
         self.image = JUMP_IMG[self.type][self.position]
         if self.dino_jump:
-            self.dino_rect.y -= self.jump_vel * 4
+            self.rect.y -= self.jump_vel * 4
             self.jump_vel -= 0.8
         if self.jump_vel < -JUMP_VEL:
-            self.dino_rect.y = Y_POS
+            self.rect.y = Y_POS
             self.dino_jump = False
             self.jump_vel = JUMP_VEL
 
     def duck(self):
         self.image = DUCK_IMG[self.type][self.position][self.step_index // 5]
-        self.dino_rect.y = Y_POS + 37
+        self.rect.y = Y_POS + 37
         self.step_index += 1
         self.dino_duck = False
 
     def draw(self, screen: pygame.Surface):
-        screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        screen.blit(self.image, (self.rect.x, self.rect.y))

@@ -26,8 +26,13 @@ class ObstaclesManager:
         
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles, game.isDark)
-            
-            if game.player.dino_rect.colliderect(obstacle.rect):
+
+            group_obstacle = pygame.sprite.Group()
+            group_obstacle.add(obstacle)
+
+            collider = pygame.sprite.spritecollide(game.player, group_obstacle, False, pygame.sprite.collide_mask)
+
+            if collider:
                 if not game.player.has_power_up:
                     pygame.time.delay(500)
                     game.playing = False
